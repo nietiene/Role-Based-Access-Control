@@ -39,6 +39,23 @@ App.get('/login', (req, res) => {
 });
 
 // handle Login logic
+App.post("/login", (req, res) => {
+    const { name, password } = req.body;
+    const sql = "SELECT * FROM mysql WHERE name = ? AND password = ?";
+    connection.query(sql, [name, password], (err, results) => {
+       if (err){
+        res.redirect("/login", {error: "Database error"});
+      }
+      if (results.length > 0) {
+        req.session.IsLoggedIn = true;
+        req.session.name = name;
+        res.redirect("/user");
+      } else {
+        res.render('login', {error: "Invalid credentials"});
+      }
+      
+    });
+})
 connection.connect((err) => {
     if (err) {
         console.log("ERROR:", err);
