@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of user</title>
+</head>
+<body>
+    <table border="2">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Password</th>
+            <th colspan="2">Modification</th>
+        </tr>
+            <% user.forEach(u => { %>
+         <tr>
+              <td><%= u.id %></td>
+              <td><%= u.name %></td>
+              <td><%= u.password %></td>
+               <td><a href="/update/<%= u.id %>">update</a></td>
+               <td><a href="/delete/<%= u.id %>">Delete</a></td>
+            </tr>
+            <% }) %>
+    </table>
+</body>
+</html>
