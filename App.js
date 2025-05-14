@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const session = require("express-session");
 const path = require("path");
-const { connect } = require("http2");
 require("dotenv").config();
 
 const App = express();
@@ -18,14 +17,6 @@ App.use(session({
     saveUninitialized: false,
 }));
 
-// Checking if user is authorised or not
-function IsLoggedIn (req, res, next) {
-    if (!req.session.IsLoggedIn) {
-        res.render("login");
-    } else {
-        next();
-    }
-}
 const connection = mysql.createConnection({
     host: process.env.HOST_NAME,
     user: process.env.USER_NAME,
@@ -33,57 +24,84 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
+// Checking if user is authorised or not
+function IsLoggedIn (req, res, next) {
+    if (!req.session.IsLoggedIn) {
+        res.redirect("login");
+    }
+        next();
+}
+
 // Get form for Login
 App.get('/login', (req, res) => {
-    res.render("login");
+    res.render("login", {error: null});
 });
 
 // handle Login logic
 App.post("/login", (req, res) => {
     const { name, password } = req.body;
-    const sql = "SELECT * FROM mysql WHERE name = ? AND password = ?";
-    connection.query(sql, [name, password], (err, results) => {
-       if (err){
-        res.redirect("/login", {error: "Database error"});
+       if (!name && !password) {
+            res.render("login", {error: "Both name and password are required"});
+        }
+     const sql = "SELECT * FROM mysql WHERE name = ? AND password = ?";
+     connection.query(sql, [name, password], (error, result) => {
+        if (error){
+        res.render("login", {error: "Database error"});
       }
-      if (results.length > 0) {
+      if (result.length > 0) {
         req.session.IsLoggedIn = true;
         req.session.name = name;
-        res.redirect("/user");
+        res.render("user", {user: result, name: req.session.name});
       } else {
         res.render('login', {error: "Invalid credentials"});
       }
       
     });
+});
+
+// disable eccess system after logging out
+App.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '-1');
+    next();
 })
-connection.connect((err) => {
-    if (err) {
-        console.log("ERROR:", err);
+// Peform logout operation
+App.get('/logout', (req, res) => {
+    req.session.destroy(error => {
+        if (error) throw error;
+        res.redirect("/login");
+    });
+});
+
+connection.connect((error) => {
+    if (error) {
+        console.log("ERROR:", error);
     } else { 
       console.log("Connected successfully");
     }
 });
 
 // Insert endpoint 
-App.get('/addNew', (req, res) => {
+App.get('/addNew', IsLoggedIn, (req, res) => {
      res.render("addNew");
 });
 
 // Handle insert operation
-App.post('/addNew', (req, res) => {
+App.post('/addNew', IsLoggedIn, (req, res) => {
     const { name, password } = req.body;
     const handleInsert = "INSERT INTO mysql(name, password) VALUES(?, ?)";
-    connection.query(handleInsert, [name, password], (err) => {
-        if (err) throw err;
+    connection.query(handleInsert, [name, password], (error) => {
+        if (error) throw error;
         res.redirect("/user");
     });
 });
 
-App.get('/user', (req, res) => {
+App.get('/user', IsLoggedIn, (req, res) => {
     const sqlSelect = "SELECT * FROM mysql";
-    connection.query(sqlSelect, (err, result) => {
-        if (err) {
-            throw err;
+    connection.query(sqlSelect, (error, result) => {
+        if (error) {
+            throw error;
         } else {
             res.render("user", {user: result});
         }
@@ -91,28 +109,28 @@ App.get('/user', (req, res) => {
 })
 
 // get uppdate form
-App.get("/update/:id", (req, res) => {
+App.get("/update/:id", IsLoggedIn ,(req, res) => {
     const id = parseInt(req.params.id);
     const updateForm = "SELECT * FROM mysql WHERE id = ?";
-    connection.query(updateForm, id ,(err, result) => {
-        if (err) throw err;
+    connection.query(updateForm, id ,(error, result) => {
+        if (error) throw error;
         res.render("updateForm", {user: result[0]});
     });
 });
 
 // Handle Update Operation
-App.post("/update/:id", (req, res) => {
+App.post("/update/:id", IsLoggedIn ,(req, res) => {
     const id = parseInt(req.params.id);
     const { name, password } = req.body;
     const handleUpdate = "UPDATE mysql SET name = ?, password = ? WHERE id = ?";
-    connection.query(handleUpdate, [name, password, id], (err) => {
-        if (err) throw err;
+    connection.query(handleUpdate, [name, password, id], (error) => {
+        if (error) throw error;
         res.redirect("/user");
     })
 })
 
 // handle delete operation
-App.get("/delete/:id", (req, res) => {
+App.get("/delete/:id", IsLoggedIn ,(req, res) => {
     const id = parseInt(req.params.id);
     const sqlDelete = "DELETE FROM mysql WHERE id = ?";
     connection.query(sqlDelete, id, (err) => {
