@@ -60,7 +60,7 @@ App.post("/login", (req, res) => {
         req.session.IsLoggedIn = true;
         req.session.name = result[0].name;
         req.session.role = result[0].role;
-        res.redirect("/user", {user: result, name: req.session.name});
+        res.redirect("/user");
       } else {
         res.render('login', {error: "Invalid credentials"});
       }
@@ -83,14 +83,6 @@ App.get('/logout', (req, res) => {
     });
 });
 
-connection.connect((error) => {
-    if (error) {
-        console.log("ERROR:", error);
-    } else { 
-      console.log("Connected successfully");
-    }
-});
-
 // Insert endpoint 
 App.get('/addNew', IsLoggedIn, IsAdmin ,(req, res) => {
      res.render("addNew");
@@ -108,12 +100,14 @@ App.post('/addNew', IsLoggedIn, IsAdmin, (req, res) => {
 
 App.get('/user', IsLoggedIn, (req, res) => {
     const sqlSelect = "SELECT * FROM mysql";
-    connection.query(sqlSelect, [req.session.name],  (error, result) => {
-        if (error) {
-            throw error;
-        } else {
-            res.render("user", {user: result});
-        }
+    connection.query(sqlSelect, (error, result) => {
+        if (error) throw error;
+        res.render("user", {
+            user: result,
+            nam:req.session.name,
+            role: req.session.role
+        });
+
     })
 })
 
@@ -123,7 +117,11 @@ App.get("/update/:id", IsLoggedIn ,(req, res) => {
     const updateForm = "SELECT * FROM mysql WHERE id = ?";
     connection.query(updateForm, id ,(error, result) => {
         if (error) throw error;
-        res.render("updateForm", {user: result[0]});
+        res.render("updateForm", {
+             user: result[0],
+             name: req.session.name, 
+             role: req.session.role
+        });
     });
 });
 
@@ -143,12 +141,16 @@ App.get("/delete/:id", IsLoggedIn, IsAdmin,(req, res) => {
     const id = parseInt(req.params.id);
     const sqlDelete = "DELETE FROM mysql WHERE id = ?";
     connection.query(sqlDelete, id, (err) => {
-        if (err) {
-            throw err;
-        } else {
-            res.redirect("/user");
-        }
-    })
-})
+        if (err) throw err;
+        res.redirect("/user");
+    });
+});
+connection.connect((error) => {
+    if (error) {
+        console.log("ERROR:", error);
+    } else { 
+      console.log("Connected successfully");
+    }
+});
 const PORT = process.env.PORT;
 App.listen(PORT, () => console.log(`http://localhost:${PORT}`));
