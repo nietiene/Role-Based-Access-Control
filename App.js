@@ -65,9 +65,13 @@ app.get('/admin', isAuth, (req, res) => {
   res.render('admin', { session: req.session })
 });
 
-app.get('/user' , (isAuth, (req, res) => {
-  res.render("user", { session: req.session });
-}))
+app.get('/user' , isAuth, (req, res) => {
+  const userId = req.session.userId;
+  conn.query('SELECT * FROM users WHERE id = ?', [userId], (err, results) => {
+    if (err) throw err;
+    res.render('user', { user: results[0] })
+  });
+});
 // Logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
