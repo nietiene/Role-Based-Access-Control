@@ -42,16 +42,27 @@ app.get('/login', (req, res) => {
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  conn.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
+  conn.query('SELECT * FROM users WHERE username = ?', [username, password], (err, results) => {
     if (err) throw err;
-    if (results.length && bcrypt.compareSync(password, results[0].password)) {
+    if (results.length > 0) {
       req.session.userId = results[0].id;
       req.session.role = results[0].role;
-      res.redirect('/');
+     
+      if (results[0].role === "admin") {
+        return res.redirect('/admin');
+      } else {
+        return res.redirect('/user');
+      }
     } else {
-      res.render("login", {message: "invalid credentials"});
+      res.render("login");
+      res.send("Invalid credentials");
     }
   });
+});
+
+app.get('/admin', isAuth, (req, res) => {
+  if (req.session.role !== 'admin') return res.send('Access denied');
+  res.render('admin', { session: req.session })
 });
 
 // Logout
@@ -73,12 +84,17 @@ app.get('/add', (req, res) => {
   res.render("register");
 })
 app.post('/add', (req, res) => {
-  const { username, password,  } = req.body;
+  const { username, password, role } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
-  conn.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashed], (err) => {
-    if (err) throw err;
-    res.redirect('/');
-  });
+
+  conn.query(
+    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+    [username, hashed, role || 'user'],
+    (err) => {
+      if (err) throw err;
+      res.redirect('/');
+    }
+  );
 });
 
 // Edit form

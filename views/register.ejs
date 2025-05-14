@@ -6,13 +6,17 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="/add" method="post">
-        <label for="">Username</label>
-        <input type="text" name="username"> <br>
-        <label for="">password</label>
-        <input type="text" name="password" id=""> <br>
+ <h2>Create User</h2>
+<form action="/add" method="POST">
+  <input name="username" placeholder="Username" required>
+  <input name="password" type="password" placeholder="Password" required>
+  <select name="role">
+    <option value="user">User</option>
+    <option value="admin">Admin</option>
+  </select>
+  <button type="submit">Add User</button>
+</form>
 
-        <button type="submit">Add</button>
     </form>
 </body>
 </html>
