@@ -6,14 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Admin user</h1>
+    <h1>User Dashboard</h1>
     <p>Welcome <%= session.role %> - <%= session.userId %></p>
-    
-    <a href="/logout">Logut</a>
 
-    <ul>
-        <li><a href="/">Manage All Users</a></li>
-        <li><a href="/add">Add New Admin/User</a></li>
-    </ul>
+    <a href="/logout">Logout</a>
+    <p>You can view and update your own profile</p>
 </body>
 </html>

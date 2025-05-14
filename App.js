@@ -65,6 +65,9 @@ app.get('/admin', isAuth, (req, res) => {
   res.render('admin', { session: req.session })
 });
 
+app.get('/user' , (isAuth, (req, res) => {
+  res.render("user", { session: req.session });
+}))
 // Logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
