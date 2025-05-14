@@ -7,7 +7,10 @@
 </head>
 <body>
     <h1>Welcome <%= name %> To RBCMS</h1>
-    <a href="/addNew">Create New User</a>
+    <% if (role === 'admin') { %>
+      <a href="/addNew">Create New User</a>
+    <% } %>
+    <h2>User List</h2>
     <table border="2">
         <tr>
             <th>Id</th>
@@ -20,8 +23,14 @@
               <td><%= u.id %></td>
               <td><%= u.name %></td>
               <td><%= u.password %></td>
+            
+              <% if (role === 'admin' || u.name === name) { %>
                <td><a href="/update/<%= u.id %>">update</a></td>
                <td><a href="/delete/<%= u.id %>">Delete</a></td>
+              <% } else {%>
+                <td>Not Authorised</td>
+                <td>Not Authorised</td>
+                <% } %>
             </tr>
             <% }) %>
     </table>

@@ -6,6 +6,8 @@
     <title>Update user</title>
 </head>
 <body>
+    <h1>Welcome <%= name %> - <%= role %></h1>
+    <% if (role === 'admin' || user.name === name) { %>
     <form action="/update/<%= user.id %>" method="post">
         <label for="">Id</label>
         <input type="text" name="name" value="<%= user.id %>" disabled> <br>
@@ -15,5 +17,10 @@
         <input type="password" name="password" value="<%= user.password %>"> <br>
         <button type="submit">Update</button>
     </form>
+   <% } else {%>
+     <p>You are not Authorised to access this user</p>
+   <% } %>
+
+   <a href="/user">Back to list</a>
 </body>
 </html>

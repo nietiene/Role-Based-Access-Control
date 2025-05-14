@@ -24,6 +24,14 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
 });
 
+// check if it is admin logged in 
+function IsAdmin(req, res, next) {
+    if (req.session.role !== "admin") {
+        return res.redirect("/user");
+    }
+    next();
+}
+
 // Checking if user is authorised or not
 function IsLoggedIn (req, res, next) {
     if (!req.session.IsLoggedIn) {
@@ -50,8 +58,9 @@ App.post("/login", (req, res) => {
       }
       if (result.length > 0) {
         req.session.IsLoggedIn = true;
-        req.session.name = name;
-        res.render("user", {user: result, name: req.session.name});
+        req.session.name = result[0].name;
+        req.session.role = result[0].role;
+        res.redirect("/user", {user: result, name: req.session.name});
       } else {
         res.render('login', {error: "Invalid credentials"});
       }
@@ -83,15 +92,15 @@ connection.connect((error) => {
 });
 
 // Insert endpoint 
-App.get('/addNew', IsLoggedIn, (req, res) => {
+App.get('/addNew', IsLoggedIn, IsAdmin ,(req, res) => {
      res.render("addNew");
 });
 
 // Handle insert operation
-App.post('/addNew', IsLoggedIn, (req, res) => {
-    const { name, password } = req.body;
-    const handleInsert = "INSERT INTO mysql(name, password) VALUES(?, ?)";
-    connection.query(handleInsert, [name, password], (error) => {
+App.post('/addNew', IsLoggedIn, IsAdmin, (req, res) => {
+    const { name, password, role } = req.body;
+    const handleInsert = "INSERT INTO mysql(name, password, role) VALUES(?, ?, ?)";
+    connection.query(handleInsert, [name, password, role], (error) => {
         if (error) throw error;
         res.redirect("/user");
     });
@@ -99,7 +108,7 @@ App.post('/addNew', IsLoggedIn, (req, res) => {
 
 App.get('/user', IsLoggedIn, (req, res) => {
     const sqlSelect = "SELECT * FROM mysql";
-    connection.query(sqlSelect, (error, result) => {
+    connection.query(sqlSelect, [req.session.name],  (error, result) => {
         if (error) {
             throw error;
         } else {
@@ -119,7 +128,7 @@ App.get("/update/:id", IsLoggedIn ,(req, res) => {
 });
 
 // Handle Update Operation
-App.post("/update/:id", IsLoggedIn ,(req, res) => {
+App.post("/update/:id", IsLoggedIn,(req, res) => {
     const id = parseInt(req.params.id);
     const { name, password } = req.body;
     const handleUpdate = "UPDATE mysql SET name = ?, password = ? WHERE id = ?";
@@ -130,7 +139,7 @@ App.post("/update/:id", IsLoggedIn ,(req, res) => {
 })
 
 // handle delete operation
-App.get("/delete/:id", IsLoggedIn ,(req, res) => {
+App.get("/delete/:id", IsLoggedIn, IsAdmin,(req, res) => {
     const id = parseInt(req.params.id);
     const sqlDelete = "DELETE FROM mysql WHERE id = ?";
     connection.query(sqlDelete, id, (err) => {
