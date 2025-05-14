@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+const flash = require("connect-flash");
 const app = express();
 const conn = mysql.createConnection({
   host: 'localhost',
@@ -24,7 +25,13 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+app.use(flash());
 
+app.use((req, res, next) => {
+  res.locals.success = req.flash("successs");
+  res.locals.error = req.flash("error");
+  next();
+});
 // Middleware for role check
 function isAdmin(req, res, next) {
   if (req.session.role === 'admin') return next();
@@ -33,6 +40,7 @@ function isAdmin(req, res, next) {
 
 function isAuth(req, res, next) {
   if (req.session.userId) return next();
+  req.flash('error', 'you must logged in to access this page');
   res.redirect('/login');
 }
 
@@ -42,22 +50,25 @@ app.get('/login', (req, res) => {
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  conn.query('SELECT * FROM users WHERE username = ?', [username, password], (err, results) => {
+  conn.query('SELECT * FROM users WHERE username = ?', [username], (err, results) => {
     if (err) throw err;
     if (results.length > 0) {
+      const hashedPassword = results[0].password;
+      if (bcrypt.compareSync(password, hashedPassword)) {
       req.session.userId = results[0].id;
       req.session.role = results[0].role;
-     
-      if (results[0].role === "admin") {
-        return res.redirect('/admin');
-      } else {
-        return res.redirect('/user');
-      }
+      req.flash('success', 'Successfully logged in');
+      return res.redirect(results[0].role === 'admin' ? '/admin' : '/user');
     } else {
+      req.flash('error', 'Invalid password');
+      res.redirect('/login');
+    }
+  }else {
+      req.flash('error', 'invalid credentials');
       res.render("login");
-      res.send("Invalid credentials");
     }
   });
+  
 });
 
 app.get('/admin', isAuth, (req, res) => {
@@ -87,10 +98,10 @@ app.get('/', isAuth, (req, res) => {
 });
 
 // Create new user
-app.get('/add', (req, res) => {
+app.get('/register', isAuth, isAdmin,(req, res) => {
   res.render("register");
 })
-app.post('/add', (req, res) => {
+app.post('/register', isAdmin, isAuth,(req, res) => {
   const { username, password, role } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
 
@@ -113,7 +124,7 @@ app.get('/edit/:id', isAuth, (req, res) => {
 });
 
 // Update
-app.post('/update/:id', (req, res) => {
+app.post('/edit/:id', (req, res) => {
   const { username, password } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
   conn.query('UPDATE users SET username=?, password=? WHERE id=?', [username, hashed, req.params.id], (err) => {
@@ -129,5 +140,25 @@ app.get('/delete/:id', isAdmin, (req, res) => {
     res.redirect('/');
   });
 });
+
+// get account for user
+app.get('/add', (req, res) => {
+  res.render('add');
+});
+
+// handle insert logic
+app.post('/add', (req ,res) => {
+   const { username, password,  } = req.body;
+  const hashed = bcrypt.hashSync(password, 10);
+  conn.query(
+    'INSERT INTO users (username, password) VALUES (?, ?)',
+    [username, hashed],
+    (err) => {
+      if (err) throw err;
+      res.redirect('/user');
+    }
+  );
+});
+
 
 app.listen(3000, () => console.log('Server running on http://localhost:3000'));

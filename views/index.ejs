@@ -8,12 +8,7 @@
 <body>
   <h2>Welcome <%= session.role %></h2>
 <a href="/logout">Logout</a>
-<form action="/add" method="POST">
-  <input name="username" required>
-  <input name="password" type="password" required>
-  <button type="submit">Add User</button>
-</form> 
-
+<a href="/add">Add New</a>
 <table border="1">
   <tr><th>ID</th><th>Name</th><th>Action</th></tr>
   <% users.forEach(user => { %>

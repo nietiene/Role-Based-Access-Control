@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>Edit User</h2>
-<form method="POST" action="/update/<%= user.id %>">
+<form method="POST" action="/edit/<%= user.id %>">
   <input name="username" value="<%= user.username %>">
   <input name="password" type="password" placeholder="New password">
   <button type="submit">Update</button>

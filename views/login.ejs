@@ -9,8 +9,17 @@
 <h2>Login</h2>
 
 <form method="POST">
-  <input name="username" required>
-  <input name="password" type="password" required>
+    <%if (success.length > 0) { %>
+      <div style="color: green;"> <%= success %></div>
+    <% } %>
+
+    <%if (error.length > 0) { %>
+      <div style="color: red;"> <%= error %></div>
+    <% } %>
+  <label for="">Username</label>
+  <input name="username" required><br>
+  <label for="">Passowrd</label>
+  <input name="password" type="password" required> <br>
   <button type="submit">Login</button>
 </form>
 
