@@ -49,7 +49,7 @@ app.post('/login', (req, res) => {
       req.session.role = results[0].role;
       res.redirect('/');
     } else {
-      res.render("login");
+      res.render("login", {message: "invalid credentials"});
     }
   });
 });
@@ -69,8 +69,11 @@ app.get('/', isAuth, (req, res) => {
 });
 
 // Create new user
+app.get('/add', (req, res) => {
+  res.render("register");
+})
 app.post('/add', (req, res) => {
-  const { username, password } = req.body;
+  const { username, password,  } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
   conn.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashed], (err) => {
     if (err) throw err;
