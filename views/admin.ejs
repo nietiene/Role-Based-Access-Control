@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Admin Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-green-100 flex justify-center min-h-screen">
+  <div class="w-full p-8 rounded-2xl bg-green-500 max-w-lg h-[50%] justify-center">
     <h1>Admin user</h1>
     <p>Welcome <%= session.role %> - <%= session.userId %></p>
     
@@ -15,5 +17,6 @@
         <li><a href="/">Manage All Users</a></li>
         <li><a href="/add">Add New Admin/User</a></li>
     </ul>
+  </div>
 </body>
 </html>
