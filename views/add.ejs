@@ -7,14 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items center justify-center min-h-screen">
-    <div class=" bg-white- p-8 rounded-2xl shadow-lg w-full "></div>
-    <h1>Create Account</h1>
-    <form action="/add" method="POST">
-    <label for="">Username</label>
-    <input name="username" required><br>
-    <label for="">Password</label>
-    <input name="password" type="password" required> <br>
-    <button type="submit">Add User</button>
-</form> 
+  <div class=" bg-white- p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Create Account</h1>
+    <form action="/add" method="POST" class="space-y-4">
+        <div>
+           <label class="block text-sm font-medium">Username</label>
+           <input name="username" required><br>
+        </div>
+
+     <label for="">Password</label>
+     <input name="password" type="password" required> <br>
+     <button type="submit">Add User</button>
+    </form> 
+</div>
 </body>
 </html>
