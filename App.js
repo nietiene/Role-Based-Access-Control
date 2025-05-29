@@ -28,7 +28,7 @@ app.use(session({
 app.use(flash());
 
 app.use((req, res, next) => {
-  res.locals.success = req.flash("successs");
+  res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
@@ -54,6 +54,9 @@ app.post('/login', (req, res) => {
     if (err) throw err;
     if (results.length > 0) {
       const hashedPassword = results[0].password;
+       console.log("Entered Passowrd:", password)
+       console.log("Entered Passowrd:", hashedPassword);
+       console.log("Match passowrd:", bcrypt.compareSync(password, hashedPassword));
       if (bcrypt.compareSync(password, hashedPassword)) {
       req.session.userId = results[0].id;
       req.session.role = results[0].role;
