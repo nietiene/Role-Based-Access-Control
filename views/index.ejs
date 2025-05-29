@@ -20,14 +20,14 @@
 
  <div class="overflow-auto">
    <table border="1" class="w-full table-auto border border-green-200 rounded-lg overflow-hidden">
-    <thead class="">
+    <thead class="bg-green-100 text-green-800">
       <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Action</th>
+        <th class="px-5 py-2 text-left">ID</th>
+        <th class="px-5 py-2 text-left">Name</th>
+        <th class="px-5 py-2 text-left">Action</th>
       </tr>
     </thead>
-   
+   <tbody>
   <% users.forEach(user => { %>
     <tr>
       <td><%= user.id %></td>
@@ -40,7 +40,9 @@
       </td>
     </tr>
   <% }) %>
-</table>
+   </tbody>
+
+  </table>
 </div>
 </div>
 </body>
