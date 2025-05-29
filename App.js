@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
     if (err) throw err;
     if (results.length > 0) {
       const hashedPassword = results[0].password;
-      if (bcrypt.compareSync(password, hashedPassword)) {
+      if (bcrypt.compare(password, hashedPassword)) {
       req.session.userId = results[0].id;
       req.session.role = results[0].role;
       req.flash('success', 'Successfully logged in');
