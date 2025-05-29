@@ -98,10 +98,10 @@ app.get('/', isAuth, (req, res) => {
 });
 
 // Create new user
-app.get('/register', isAuth, isAdmin,(req, res) => {
+app.get('/register',(req, res) => {
   res.render("register");
 })
-app.post('/register', isAdmin, isAuth,(req, res) => {
+app.post('/register', (req, res) => {
   const { username, password, role } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
 
