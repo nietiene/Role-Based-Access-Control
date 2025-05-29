@@ -137,7 +137,7 @@ app.post('/edit/:id', (req, res) => {
 });
 
 // Delete
-app.get('/delete/:id', isAdmin, (req, res) => {
+app.post('/delete/:id', isAdmin, (req, res) => {
   conn.query('DELETE FROM users WHERE id=?', [req.params.id], (err) => {
     if (err) throw err;
     res.redirect('/');
