@@ -12,11 +12,11 @@
     <p class="font-bold text-green-700 text-center">Welcome <%= session.role %> - Id:<%= session.userId %></p>
     
     <div class="flex justify-end">
-        <a href="/logout" class=" text-white bg-red-500 px-5 py-2 text-center rounded-lg shadow-lg hover:bg-red-600 transition duration-200">Logout</a>
+        <a href="/logout" class="text-white bg-red-500 px-5 py-2 text-center rounded-lg shadow-lg hover:bg-red-600 transition duration-200">Logout</a>
     </div>
-    <ul class="flex justify-center">
-        <li><a href="/" class="">Manage All Users</a></li>
-        <li><a href="/add">Add New Admin/User</a></li>
+    <ul class="flex justify-between mt-6">
+        <li><a href="/" class="text-white bg-green-500 px-5 py-2 text-center rounded-lg shadow-lg hover:bg-green-600 transition duration-200">Manage All Users</a></li>
+        <li><a href="/register" class="text-white bg-green-500 px-5 py-2 text-center rounded-lg shadow-lg hover:bg-green-600 transition duration-200">Add New Admin/User</a></li>
     </ul>
   </div>
 </body>
