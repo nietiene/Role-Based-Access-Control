@@ -38,8 +38,10 @@
       <td class="px-4 py-2">
         <% if (user.profile_pic) {%>
           <img src="/uploads/<%= user.profile_pic %>" alt="Profile Image"
-          class="">
-        }
+          class="w-10 h-19 rounded-full object-cover">
+        <% } else { %>
+          <span class="text-gray-400 italic">No Image</span>
+        <% } %>
       </td>
       <td class="px-4 py-2 space-x-2">
         <a href="/edit/<%= user.id %>" class="text-green-600 hover:underline">Edit</a>
