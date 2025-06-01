@@ -116,12 +116,13 @@ app.get('/', isAuth, (req, res) => {
 app.get('/register', isAuth, isAdmin,(req, res) => {
   res.render("register");
 })
-app.post('/register', isAdmin, isAuth,(req, res) => {
+app.post('/register', isAdmin, isAuth, upload.single('profile_pic'),(req, res) => {
   const { username, password, role } = req.body;
+  const profile_pic = req.file ? req.file.filename : null;
   const hashed = bcrypt.hashSync(password, 10);
 
   conn.query(
-    'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+    'INSERT INTO users (username, password, role, profile_pic) VALUES (?, ?, ?, ?)',
     [username, hashed, role || 'user'],
     (err) => {
       if (err) throw err;
