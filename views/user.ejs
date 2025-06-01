@@ -11,6 +11,7 @@
     <h1 class="text-2xl font-bold text-green-700 text-center mb-4">User Dashboard</h1>
     <p class="text-center text-green-700 mb-4">Welcome <%= user.username %></p>
     <div class=" flex justify-center mb-4">
+     
         <% if (user.profile_pic) { %>
           <img src="/uploads/<%= user.profile_pic %>" alt="profile_pic"
           class="w-32 h-32 rounded-full border-4 border-green-500 object-cover shadow-md">
@@ -18,7 +19,8 @@
            <div class="w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 bg-gray-500 text-sm shadow-md">
             No Image
            </div>
-        } 
+        <% } %> 
+
     </div>
     <div class="flex justify-end mb-4">
          <a href="/logout" class="text-sm text-white bg-red-500 hover:bg-red-600 px-4 py-2 transition duration-200 rounded-lg">Logout</a>
