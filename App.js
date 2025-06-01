@@ -12,7 +12,9 @@ const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'public/uploads');
   },
-  
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // to create unique name at each image
+  }
 })
 const conn = mysql.createConnection({
   host: 'localhost',
