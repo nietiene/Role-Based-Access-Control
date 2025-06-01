@@ -144,10 +144,12 @@ app.post('/edit/:id',  upload.single('profile_pic'),(req, res) => {
   const { username, password } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
   const profile_pic = req.file ? req.file.filename : null;
-  conn.query('UPDATE users SET username=?, password=? WHERE id=?', [username, hashed, req.params.id], (err) => {
-    if (err) throw err;
-    res.redirect('/');
-  });
+  
+  const query = profile_pic 
+    ? 'UPDATE users SET username = ?, passowrd = ?, profile_pic = ? WHERE id = ?'
+    : 'UPDATE users SET username = ?, password = ?, WHERE id = ? ';
+
+    const params = profile_pic
 });
 
 // Delete
