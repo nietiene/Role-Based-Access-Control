@@ -73,6 +73,7 @@ app.post('/login', (req, res) => {
       if (bcrypt.compareSync(password, hashedPassword)) {
       req.session.userId = results[0].id;
       req.session.role = results[0].role;
+      req.session.profile_pic = results[0].profile_pic;
       req.flash('success', 'Successfully logged in');
       return res.redirect(results[0].role === 'admin' ? '/admin' : '/user');
     } else {
