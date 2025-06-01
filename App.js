@@ -150,6 +150,13 @@ app.post('/edit/:id',  upload.single('profile_pic'),(req, res) => {
     : 'UPDATE users SET username = ?, password = ?, WHERE id = ? ';
 
     const params = profile_pic
+      ? [username, hashed, profile_pic, req.params.id]
+      : [username, hashed, req.params.id];
+
+   conn.query(query, params, (err) => {
+    if (err) throw err;
+    res.redirect('/');
+   })   
 });
 
 // Delete
