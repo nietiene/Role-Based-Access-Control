@@ -123,7 +123,7 @@ app.post('/register', isAdmin, isAuth, upload.single('profile_pic'),(req, res) =
 
   conn.query(
     'INSERT INTO users (username, password, role, profile_pic) VALUES (?, ?, ?, ?)',
-    [username, hashed, role || 'user'],
+    [username, hashed, role || 'user', profile_pic],
     (err) => {
       if (err) throw err;
       res.redirect('/');
@@ -132,7 +132,7 @@ app.post('/register', isAdmin, isAuth, upload.single('profile_pic'),(req, res) =
 });
 
 // Edit form
-app.get('/edit/:id', isAuth, (req, res) => {
+app.get('/edit/:id', isAuth,(req, res) => {
   conn.query('SELECT * FROM users WHERE id = ?', [req.params.id], (err, results) => {
     if (err) throw err;
     res.render('edit', { user: results[0] });
@@ -140,9 +140,10 @@ app.get('/edit/:id', isAuth, (req, res) => {
 });
 
 // Update
-app.post('/edit/:id', (req, res) => {
+app.post('/edit/:id',  upload.single('profile_pic'),(req, res) => {
   const { username, password } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
+  const profile_pic = req.file ? req.file.filename : null;
   conn.query('UPDATE users SET username=?, password=? WHERE id=?', [username, hashed, req.params.id], (err) => {
     if (err) throw err;
     res.redirect('/');
