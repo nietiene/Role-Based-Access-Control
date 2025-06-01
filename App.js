@@ -4,6 +4,8 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const flash = require("connect-flash");
+const multer = require("multer");
+const path = require("path")
 const app = express();
 const conn = mysql.createConnection({
   host: 'localhost',
