@@ -8,7 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const app = express();
 
-app.use(express.static('public'));
+app.use('/uploads',express.static('public/uploads'));
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     cb(null, 'public/uploads');
