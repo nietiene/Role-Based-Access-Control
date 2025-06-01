@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
   filename: function(req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname)); // to create unique name at each image
   }
-})
+});
+const upload = multer({ storage });
 const conn = mysql.createConnection({
   host: 'localhost',
   user: 'root',
