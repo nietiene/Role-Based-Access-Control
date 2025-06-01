@@ -162,7 +162,7 @@ app.post('/edit/:id',  upload.single('profile_pic'),(req, res) => {
 });
 
 // Delete
-app.post('/delete/:id', isAdmin, (req, res) => {
+app.get('/delete/:id', isAdmin, (req, res) => {
   conn.query('DELETE FROM users WHERE id=?', [req.params.id], (err) => {
     if (err) throw err;
     res.redirect('/');
