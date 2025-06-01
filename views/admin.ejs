@@ -11,6 +11,12 @@
     <h1 class="font-bold text-green-700 text-center">Admin user</h1>
     <p class="font-bold text-green-700 text-center">Welcome <%= session.role %> - Id:<%= session.userId %></p>
     
+    <% if (session.profile_pic) %> { %> 
+      <div class="flex justify-center mb-4">
+        <img src="/uploads/<% session.profile_pic %>" alt="Profile Image" 
+        class="w-24 h-24  object-cover rounded-full border-4 border-green-600 shadow-lg"/>
+      </div>
+    <% } %>
     <div class="flex justify-end">
         <a href="/logout" class="text-white bg-red-500 px-5 py-2 text-center rounded-lg shadow-lg hover:bg-red-600 transition duration-200">Logout</a>
     </div>
