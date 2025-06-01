@@ -175,12 +175,13 @@ app.get('/add', (req, res) => {
 });
 
 // handle insert logic
-app.post('/add', (req ,res) => {
+app.post('/add', upload.single('profile_pic'), (req ,res) => {
    const { username, password,  } = req.body;
   const hashed = bcrypt.hashSync(password, 10);
+  const profile_pic = req.file ? req.file.filename : null;
   conn.query(
-    'INSERT INTO users (username, password) VALUES (?, ?)',
-    [username, hashed],
+    'INSERT INTO users (username, password, profile_pic) VALUES (?, ?, ?)',
+    [username, hashed, profile_pic],
     (err) => {
       if (err) throw err;
       res.redirect('/user');
