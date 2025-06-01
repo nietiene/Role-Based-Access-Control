@@ -5,8 +5,15 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const flash = require("connect-flash");
 const multer = require("multer");
-const path = require("path")
+const path = require("path");
 const app = express();
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'public/uploads');
+  },
+  
+})
 const conn = mysql.createConnection({
   host: 'localhost',
   user: 'root',
