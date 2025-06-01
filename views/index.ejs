@@ -25,6 +25,7 @@
         <th class="px-5 py-2 text-left">ID</th>
         <th class="px-5 py-2 text-left">Name</th>
         <th class="px-5 py-2 text-left">Role</th>
+        <th class="px-5 py-2 text-left">Profile Image</th>
         <th class="px-5 py-2 text-left">Action</th>
       </tr>
     </thead>
@@ -34,6 +35,9 @@
       <td class="px-4 py-2"><%= user.id %></td>
       <td class="px-4 py-2"><%= user.username %></td>
       <td class="px-4 py-2"><%= user.role %></td>
+      <td class="px-4 py-2">
+        
+      </td>
       <td class="px-4 py-2 space-x-2">
         <a href="/edit/<%= user.id %>" class="text-green-600 hover:underline">Edit</a>
         <% if (session.role === 'admin') { %>
